@@ -1,0 +1,18 @@
+spring:
+  # Spring DATASOURCE (DataSourceAutoConfiguration & DataSourceProperties)
+  datasource:
+    url: jdbc:postgresql://192.168.99.100:5432/beersound
+    username: beersound
+    password: bs-secret
+
+  jpa:
+    properties:
+      hibernate:
+        # The SQL dialect makes Hibernate generate better SQL for the chosen database
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        # Hibernate ddl auto (create, create-drop, validate, update)
+        ddl-auto: update
+        # Fixes: Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
+        jdbc:
+          lob:
+            non_contextual_creation: true
