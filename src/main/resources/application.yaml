@@ -16,3 +16,10 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+
+auth:
+  secret: beersound-secret
+  issuer: beersound-backend
+  token_lifetime: 43200
+  header_name: BS-Token
+  spotify_header_name: Spotify-Token
