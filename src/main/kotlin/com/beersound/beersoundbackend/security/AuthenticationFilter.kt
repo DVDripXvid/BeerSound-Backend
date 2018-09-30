@@ -14,9 +14,10 @@ import org.springframework.beans.factory.annotation.Value
 @Component
 @Order(1)
 class AuthenticationFilter @Autowired constructor(
-        val jwtUtil: JwtUtil,
-        @Value("\${auth.header_name}") val bsHeaderName: String,
-        @Value("\${auth.spotify_header_name}") val spotifyHeaderName: String)
+        private val jwtUtil: JwtUtil,
+        private val spotifyApiBuilder: SpotifyApi.Builder,
+        @Value("\${auth.header_name}") private val bsHeaderName: String,
+        @Value("\${auth.spotify_header_name}")private val spotifyHeaderName: String)
     : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -33,7 +34,7 @@ class AuthenticationFilter @Autowired constructor(
         val spotifyToken = request.getHeader(spotifyHeaderName)
         if (spotifyToken != null) {
             try {
-                val spotifyApi = SpotifyApi.Builder()
+                val spotifyApi = spotifyApiBuilder
                         .setAccessToken(spotifyToken)
                         .build()
                 val userId = spotifyApi.currentUsersProfile.build().execute().id
