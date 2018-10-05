@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 @RestController()
 @RequestMapping("api/jamborees")
 class JamboreeController @Autowired constructor(private val repo: JamboreeRepository) {
-    
+
     @GetMapping
     fun getJamborees(): List<Jamboree> {
         return repo.findAll().toList()
