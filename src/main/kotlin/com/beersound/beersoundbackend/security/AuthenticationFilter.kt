@@ -41,12 +41,12 @@ class AuthenticationFilter @Autowired constructor(
                 val bsToken = jwtUtil.createTokenForUser(userId)
                 response.addHeader(bsHeaderName, bsToken)
                 request.setAttribute(userAttrName, userId)
-                chain.doFilter(request, response)
-                return
             } catch (e: Exception) {
                 handleUnauthorized(response, "Cannot obtain user details from Spotify")
                 return
             }
+            chain.doFilter(request, response)
+            return
         }
         handleUnauthorized(response, "You are not welcomed here")
     }
