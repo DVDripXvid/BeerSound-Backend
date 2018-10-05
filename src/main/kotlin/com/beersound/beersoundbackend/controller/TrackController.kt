@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 class TrackController {
 
     @GetMapping
-    fun getTracksByJamborre(jamboreeId: Int): List<BeerSoundTrack> {
+    fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrack> {
         throw NotImplementedError()
     }
 
