@@ -1,8 +1,9 @@
 package com.beersound.beersoundbackend.controller
 
-import com.beersound.beersoundbackend.dto.ApiResponse
-import com.beersound.beersoundbackend.dto.BeerSoundUser
-import com.beersound.beersoundbackend.dto.Jamboree
+import com.beersound.beersoundbackend.dto.ApiResponseDto
+import com.beersound.beersoundbackend.dto.BeerSoundUserDto
+import com.beersound.beersoundbackend.dto.JamboreeDto
+import com.beersound.beersoundbackend.dto.NewJamboreeDto
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -12,42 +13,42 @@ import org.springframework.web.bind.annotation.*
 class JamboreeController @Autowired constructor(private val repo: JamboreeRepository) {
 
     @GetMapping
-    fun getJamborees(): List<Jamboree> {
-        return repo.findAll().toList()
+    fun getJamborees(): List<JamboreeDto> {
+        throw NotImplementedError()
     }
 
     @PostMapping
-    fun createJamboree(jamboree: Jamboree): Jamboree{
-        return repo.save(jamboree)
+    fun createJamboree(jamboree: NewJamboreeDto): JamboreeDto{
+        throw NotImplementedError()
     }
 
     @DeleteMapping("/{jamboreeId}")
-    fun disbandJamboree(jamboreeId: Int): ApiResponse{
+    fun disbandJamboree(jamboreeId: Int): ApiResponseDto{
         throw NotImplementedError()
     }
 
     @PostMapping("/enter")
-    fun enterJamboree(@RequestParam code: String): ApiResponse{
+    fun enterJamboree(@RequestParam code: String): ApiResponseDto{
         throw NotImplementedError()
     }
 
     @DeleteMapping("/{jamboreeId}/leave")
-    fun leaveJamboree(jamboreeId: Int): ApiResponse{
+    fun leaveJamboree(jamboreeId: Int): ApiResponseDto{
         throw NotImplementedError()
     }
 
     @GetMapping("/{jamboreeId}/users")
-    fun getJamboreeMembers(jamboreeId: Int): List<BeerSoundUser>{
+    fun getJamboreeMembers(jamboreeId: Int): List<BeerSoundUserDto>{
         throw NotImplementedError()
     }
 
     @PutMapping("/{jamboreeId}/resign")
-    fun resignHanSolo(jamboreeId: Int): ApiResponse {
+    fun resignHanSolo(jamboreeId: Int): ApiResponseDto {
         throw NotImplementedError()
     }
 
     @PutMapping("/{jamboreeId}/apply")
-    fun applyHanSolo(jamboreeId: Int): ApiResponse{
+    fun applyHanSolo(jamboreeId: Int): ApiResponseDto{
         throw NotImplementedError()
     }
 

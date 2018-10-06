@@ -1,6 +1,7 @@
 package com.beersound.beersoundbackend.controller
 
-import com.beersound.beersoundbackend.dto.BeerSoundTrack
+import com.beersound.beersoundbackend.dto.BeerSoundTrackDto
+import com.beersound.beersoundbackend.dto.NewBeerSoundTrackDto
 import org.springframework.web.bind.annotation.*
 
 @RestController()
@@ -8,12 +9,12 @@ import org.springframework.web.bind.annotation.*
 class TrackController {
 
     @GetMapping
-    fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrack> {
+    fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrackDto> {
         throw NotImplementedError()
     }
 
     @PostMapping
-    fun addTrackToJamboree(jamboreeId: Int, @RequestBody track: BeerSoundTrack) {
+    fun addTrackToJamboree(jamboreeId: Int, @RequestBody track: NewBeerSoundTrackDto) {
         throw NotImplementedError()
     }
 
