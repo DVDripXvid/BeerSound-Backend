@@ -1,6 +1,6 @@
 package com.beersound.beersoundbackend.repository
 
-import com.beersound.beersoundbackend.dto.Jamboree
+import com.beersound.beersoundbackend.entity.Jamboree
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
