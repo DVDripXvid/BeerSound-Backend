@@ -3,20 +3,22 @@ package com.beersound.beersoundbackend.controller
 import com.beersound.beersoundbackend.dto.ApiResponse
 import com.beersound.beersoundbackend.dto.BeerSoundUser
 import com.beersound.beersoundbackend.dto.Jamboree
+import com.beersound.beersoundbackend.repository.JamboreeRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController()
 @RequestMapping("api/jamborees")
-class JamboreeController {
+class JamboreeController @Autowired constructor(private val repo: JamboreeRepository) {
 
     @GetMapping
     fun getJamborees(): List<Jamboree> {
-        throw NotImplementedError()
+        return repo.findAll().toList()
     }
 
     @PostMapping
     fun createJamboree(jamboree: Jamboree): Jamboree{
-        throw NotImplementedError()
+        return repo.save(jamboree)
     }
 
     @DeleteMapping("/{jamboreeId}")
