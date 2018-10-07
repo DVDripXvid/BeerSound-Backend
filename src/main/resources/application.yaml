@@ -6,12 +6,13 @@ spring:
     password: bs-secret
 
   jpa:
+    hibernate:
+      # Hibernate ddl auto (create, create-drop, validate, update)
+      ddl-auto: create-drop
     properties:
       hibernate:
         # The SQL dialect makes Hibernate generate better SQL for the chosen database
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        # Hibernate ddl auto (create, create-drop, validate, update)
-        ddl-auto: update
         # Fixes: Method org.postgresql.jdbc.PgConnection.createClob() is not yet implemented.
         jdbc:
           lob:

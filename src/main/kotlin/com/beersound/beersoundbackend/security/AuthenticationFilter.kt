@@ -1,5 +1,7 @@
 package com.beersound.beersoundbackend.security
 
+import com.beersound.beersoundbackend.entity.BeerSoundUser
+import com.beersound.beersoundbackend.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
@@ -8,6 +10,7 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import com.wrapper.spotify.SpotifyApi
+import com.wrapper.spotify.model_objects.specification.User
 import org.springframework.beans.factory.annotation.Value
 
 
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value
 class AuthenticationFilter @Autowired constructor(
         private val jwtUtil: JwtUtil,
         private val spotifyApiBuilder: SpotifyApi.Builder,
+        private val userRepository: UserRepository,
         @Value("\${auth.header_name}") private val bsHeaderName: String,
         @Value("\${auth.spotify_header_name}")private val spotifyHeaderName: String)
     : OncePerRequestFilter() {
@@ -37,10 +41,11 @@ class AuthenticationFilter @Autowired constructor(
                 val spotifyApi = spotifyApiBuilder
                         .setAccessToken(spotifyToken)
                         .build()
-                val userId = spotifyApi.currentUsersProfile.build().execute().id
-                val bsToken = jwtUtil.createTokenForUser(userId)
+                val user = spotifyApi.currentUsersProfile.build().execute()
+                saveUserDetails(user)
+                val bsToken = jwtUtil.createTokenForUser(user.id)
                 response.addHeader(bsHeaderName, bsToken)
-                request.setAttribute(userAttrName, userId)
+                request.setAttribute(userAttrName, user.id)
             } catch (e: Exception) {
                 handleUnauthorized(response, "Cannot obtain user details from Spotify")
                 return
@@ -53,6 +58,20 @@ class AuthenticationFilter @Autowired constructor(
 
     private fun handleUnauthorized(response: HttpServletResponse, reason: String) {
         response.sendError(401, reason)
+    }
+
+    private fun saveUserDetails(spotifyUser: User){
+        val foundUser = userRepository.findByExternalId(spotifyUser.id)
+        val bsUser = BeerSoundUser(
+                id = foundUser?.id,
+                externalId = spotifyUser.id,
+                displayName = spotifyUser.displayName ?: spotifyUser.id,
+                pictureUri = spotifyUser.images?.firstOrNull()?.url,
+                controlledJamborees = mutableListOf(),
+                jamborees = emptyList(),
+                tracks = mutableListOf()
+        )
+        userRepository.save(bsUser)
     }
 
 }
