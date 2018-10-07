@@ -14,31 +14,30 @@ import org.springframework.web.bind.annotation.*
 class JamboreeController @Autowired constructor(private val jamboreeService: JamboreeService) {
 
     @GetMapping
-    fun getJamborees(): List<JamboreeDto> {
-        throw NotImplementedError()
-    }
+    fun getJamborees(@RequestAttribute(userAttrName) externalUserId: String): List<JamboreeDto> =
+            jamboreeService.getJamboreesByUser(externalUserId)
 
     @PostMapping
-    fun createJamboree(@RequestAttribute(userAttrName) externalUserId: String, @RequestBody jamboree: NewJamboreeDto)
-        = jamboreeService.createJamboree(externalUserId, jamboree)
+    fun createJamboree(@RequestAttribute(userAttrName) externalUserId: String, @RequestBody jamboree: NewJamboreeDto) =
+            jamboreeService.createJamboree(externalUserId, jamboree)
 
     @DeleteMapping("/{jamboreeId}")
-    fun disbandJamboree(jamboreeId: Int): ApiResponseDto{
+    fun disbandJamboree(jamboreeId: Int): ApiResponseDto {
         throw NotImplementedError()
     }
 
     @PostMapping("/enter")
-    fun enterJamboree(@RequestParam code: String): ApiResponseDto{
+    fun enterJamboree(@RequestParam code: String): ApiResponseDto {
         throw NotImplementedError()
     }
 
     @DeleteMapping("/{jamboreeId}/leave")
-    fun leaveJamboree(jamboreeId: Int): ApiResponseDto{
+    fun leaveJamboree(jamboreeId: Int): ApiResponseDto {
         throw NotImplementedError()
     }
 
     @GetMapping("/{jamboreeId}/users")
-    fun getJamboreeMembers(jamboreeId: Int): List<BeerSoundUserDto>{
+    fun getJamboreeMembers(jamboreeId: Int): List<BeerSoundUserDto> {
         throw NotImplementedError()
     }
 
@@ -48,7 +47,7 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
     }
 
     @PutMapping("/{jamboreeId}/apply")
-    fun applyHanSolo(jamboreeId: Int): ApiResponseDto{
+    fun applyHanSolo(jamboreeId: Int): ApiResponseDto {
         throw NotImplementedError()
     }
 

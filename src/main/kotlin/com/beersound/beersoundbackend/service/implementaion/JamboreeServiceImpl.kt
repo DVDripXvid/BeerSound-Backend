@@ -3,6 +3,7 @@ package com.beersound.beersoundbackend.service.implementaion
 import com.beersound.beersoundbackend.dto.JamboreeDto
 import com.beersound.beersoundbackend.dto.NewJamboreeDto
 import com.beersound.beersoundbackend.entity.BeerSoundUser
+import com.beersound.beersoundbackend.entity.Jamboree
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.repository.UserRepository
 import com.beersound.beersoundbackend.service.JamboreeService
@@ -44,7 +45,8 @@ class JamboreeServiceImpl @Autowired constructor(
     }
 
     override fun getJamboreesByUser(externalUserId: String): List<JamboreeDto> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val jamborees = userRepository.findByExternalId(externalUserId)?.jamborees ?: emptyList<Jamboree>()
+        return jamborees.map { it.toDto() }
     }
 
 }
