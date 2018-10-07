@@ -1,5 +1,6 @@
 package com.beersound.beersoundbackend.entity
 
+import com.beersound.beersoundbackend.dto.JamboreeDto
 import javax.persistence.*
 
 
@@ -8,7 +9,7 @@ import javax.persistence.*
 data class Jamboree(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Int,
+        val id: Int?,
 
         val name: String,
 
@@ -16,8 +17,10 @@ data class Jamboree(
         val code: String,
 
         @OneToMany(mappedBy = "jamboree")
-        val tracks: List<BeerSoundTrack>,
+        val tracks: MutableList<BeerSoundTrack>,
 
-        @OneToMany(mappedBy = "jamboree")
-        val users: List<BeerSoundUser>
-)
+        @ManyToMany(mappedBy = "jamborees")
+        val users: MutableList<BeerSoundUser>
+) {
+    fun toDto() = JamboreeDto(id!!, name, code)
+}

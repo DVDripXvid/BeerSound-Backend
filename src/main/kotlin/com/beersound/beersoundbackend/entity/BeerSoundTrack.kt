@@ -7,9 +7,9 @@ import javax.persistence.*
 data class BeerSoundTrack(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Int,
+        val id: Int?,
 
-        val order: Int,
+        val sequenceNumber: Int,
         val externalId: String,
         val title: String,
         val artist: String,

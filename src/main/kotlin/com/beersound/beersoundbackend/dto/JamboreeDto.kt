@@ -1,13 +1,18 @@
 package com.beersound.beersoundbackend.dto
 
-import com.fasterxml.jackson.annotation.JsonCreator
+import com.beersound.beersoundbackend.entity.Jamboree
 
-data class NewJamboreeDto @JsonCreator constructor(
+
+data class NewJamboreeDto constructor(
         val name: String,
         val code: String
-)
+) {
+    fun toEntity() = Jamboree(null, name, code, mutableListOf(), mutableListOf())
+}
+
 
 data class JamboreeDto(
         val id: Int,
-        val name: String
+        val name: String,
+        val code: String
 )

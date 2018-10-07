@@ -11,9 +11,7 @@ data class NewBeerSoundTrackDto(
 
 data class BeerSoundTrackDto(
         val id: Int,
-        val order: Int,
-        val userId: Int,
-        // collected from external source
+        val sequenceNumber: Int,
         val externalId: String,
         val title: String,
         val artist: String,

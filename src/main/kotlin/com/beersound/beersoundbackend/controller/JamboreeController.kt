@@ -4,13 +4,14 @@ import com.beersound.beersoundbackend.dto.ApiResponseDto
 import com.beersound.beersoundbackend.dto.BeerSoundUserDto
 import com.beersound.beersoundbackend.dto.JamboreeDto
 import com.beersound.beersoundbackend.dto.NewJamboreeDto
-import com.beersound.beersoundbackend.repository.JamboreeRepository
+import com.beersound.beersoundbackend.security.userAttrName
+import com.beersound.beersoundbackend.service.JamboreeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController()
 @RequestMapping("api/jamborees")
-class JamboreeController @Autowired constructor(private val repo: JamboreeRepository) {
+class JamboreeController @Autowired constructor(private val jamboreeService: JamboreeService) {
 
     @GetMapping
     fun getJamborees(): List<JamboreeDto> {
@@ -18,9 +19,8 @@ class JamboreeController @Autowired constructor(private val repo: JamboreeReposi
     }
 
     @PostMapping
-    fun createJamboree(jamboree: NewJamboreeDto): JamboreeDto{
-        throw NotImplementedError()
-    }
+    fun createJamboree(@RequestAttribute(userAttrName) externalUserId: String, @RequestBody jamboree: NewJamboreeDto)
+        = jamboreeService.createJamboree(externalUserId, jamboree)
 
     @DeleteMapping("/{jamboreeId}")
     fun disbandJamboree(jamboreeId: Int): ApiResponseDto{
