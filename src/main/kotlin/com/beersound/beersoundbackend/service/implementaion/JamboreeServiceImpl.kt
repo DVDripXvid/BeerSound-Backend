@@ -19,33 +19,27 @@ class JamboreeServiceImpl @Autowired constructor(
 ) : JamboreeService {
 
     override fun createJamboree(externalUserId: String, jamboree: NewJamboreeDto): JamboreeDto {
-        val createdJamboree = jamboreeRepository.save(jamboree.toEntity())
-        val user = userRepository.findByExternalId(externalUserId)
-        if (user == null) {
-            userRepository.save(
-                    BeerSoundUser(
-                            0,
-                            true,
-                            externalUserId,
-                            externalUserId,
-                            null,
-                            mutableListOf(createdJamboree),
-                            mutableListOf()
-                    )
-            )
-        } else {
-            user.jamborees.add(createdJamboree)
-            userRepository.save(user)
-        }
+        val user = userRepository.findByExternalId(externalUserId) ?: userRepository.save(
+                BeerSoundUser(
+                        id = null,
+                        externalId = externalUserId,
+                        displayName = externalUserId,
+                        pictureUri = null,
+                        controlledJamborees = mutableListOf(),
+                        jamborees = mutableListOf(),
+                        tracks = mutableListOf()
+                )
+        )
+        val createdJamboree = jamboreeRepository.save(jamboree.toEntity(user))
         return createdJamboree.toDto()
     }
 
-    override fun enterJamboree(externalUserId: String, code: String): JamboreeDto {
+    override fun enterJamboree(externalUserId: String, code: String): JamboreeDto? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getJamboreesByUser(externalUserId: String): List<JamboreeDto> {
-        val jamborees = userRepository.findByExternalId(externalUserId)?.jamborees ?: emptyList<Jamboree>()
+        val jamborees = userRepository.findByExternalId(externalUserId)?.jamborees ?: emptyList()
         return jamborees.map { it.toDto() }
     }
 

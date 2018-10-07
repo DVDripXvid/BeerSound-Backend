@@ -1,5 +1,6 @@
 package com.beersound.beersoundbackend.entity
 
+import com.beersound.beersoundbackend.dto.BeerSoundUserDto
 import javax.persistence.*
 
 @Entity
@@ -9,22 +10,27 @@ data class BeerSoundUser(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int?,
 
-        val isHanSolo: Boolean,
         val externalId: String,
         val displayName: String?,
         val pictureUri: String?,
 
         @ManyToMany(
+                mappedBy = "users",
+                fetch = FetchType.LAZY)
+        val jamborees: List<Jamboree>,
+
+        @OneToMany(
+                mappedBy = "hanSolo",
+                fetch = FetchType.LAZY,
+                cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+        val controlledJamborees: MutableList<Jamboree>,
+
+        @OneToMany(
+                mappedBy = "user",
                 fetch = FetchType.LAZY,
                 cascade = [CascadeType.MERGE, CascadeType.PERSIST]
         )
-        @JoinTable(
-                name = "JAMBOREE_USERS",
-                joinColumns = [JoinColumn(name = "USER_ID")],
-                inverseJoinColumns = [JoinColumn(name = "JAMBOREE_ID")]
-        )
-        val jamborees: MutableList<Jamboree>,
-
-        @OneToMany(mappedBy = "jamboree")
         val tracks: MutableList<BeerSoundTrack>
-)
+) {
+    fun toDto() = BeerSoundUserDto(id!!, externalId, displayName, pictureUri)
+}

@@ -17,11 +17,13 @@ data class BeerSoundTrack(
         val durationInMs: Int,
         val albumImageUrl: String?,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "JAMBOREE_ID")
+        @ManyToOne(
+                fetch = FetchType.LAZY,
+                cascade = [CascadeType.PERSIST, CascadeType.MERGE])
         val jamboree: Jamboree,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "USER_ID")
+        @ManyToOne(
+                fetch = FetchType.LAZY,
+                cascade = [CascadeType.PERSIST, CascadeType.MERGE])
         val user: BeerSoundUser
 )

@@ -16,11 +16,25 @@ data class Jamboree(
         @Column(unique = true)
         val code: String,
 
-        @OneToMany(mappedBy = "jamboree")
+        @ManyToOne(
+                fetch = FetchType.EAGER,
+                cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+        val hanSolo: BeerSoundUser,
+
+        @OneToMany(
+                mappedBy = "jamboree",
+                fetch = FetchType.LAZY,
+                cascade = [CascadeType.MERGE, CascadeType.PERSIST])
         val tracks: MutableList<BeerSoundTrack>,
 
-        @ManyToMany(mappedBy = "jamborees")
+        @ManyToMany(
+                fetch = FetchType.LAZY,
+                cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+        @JoinTable(
+                name = "JAMBOREE_USERS",
+                joinColumns = [JoinColumn(name = "JAMBOREE_ID")],
+                inverseJoinColumns = [JoinColumn(name = "USER_ID")])
         val users: MutableList<BeerSoundUser>
 ) {
-    fun toDto() = JamboreeDto(id!!, name, code)
+    fun toDto() = JamboreeDto(id!!, name, code, hanSolo.toDto())
 }
