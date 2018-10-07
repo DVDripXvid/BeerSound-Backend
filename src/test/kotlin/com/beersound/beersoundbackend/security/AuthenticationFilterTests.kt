@@ -1,7 +1,13 @@
 package com.beersound.beersoundbackend.security
 
+import com.beersound.beersoundbackend.entity.BeerSoundUser
+import com.beersound.beersoundbackend.repository.UserRepository
 import com.wrapper.spotify.SpotifyApi
-import io.mockk.*
+import com.wrapper.spotify.model_objects.specification.User
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import org.springframework.mock.web.MockFilterChain
@@ -17,9 +23,13 @@ object AuthenticationFilterTests : Spek({
     val headerName = "test-bs-header"
     val spotifyHeaderName = "test-spotify-header"
     val userId = "test-user"
+    val mockUser = BeerSoundUser(1, userId, "Mock Joe", null, emptyList(), mutableListOf(), mutableListOf())
+    val userRepository = mockk<UserRepository>()
+    every { userRepository.findByExternalId(any()) } returns mockUser
+    every { userRepository.save<BeerSoundUser>(any()) } returns mockUser
 
     Feature("Authentication") {
-        val authFilter by memoized { AuthenticationFilter(jwtUtil, spotifyApiBuilder, headerName, spotifyHeaderName) }
+        val authFilter by memoized { AuthenticationFilter(jwtUtil, spotifyApiBuilder, userRepository, headerName, spotifyHeaderName) }
         val filterChain by memoized { spyk<MockFilterChain>() }
         val response by memoized { spyk<MockHttpServletResponse>() }
         val request by memoized { MockHttpServletRequest() }
@@ -50,7 +60,11 @@ object AuthenticationFilterTests : Spek({
             Given("a request with a valid Spotify token header. no BeerSound token") {
                 request.addHeader(spotifyHeaderName, "dummySpotifyToken")
                 every { spotifyApiBuilder.setAccessToken(any()) } returns spotifyApiBuilder
-                every { spotifyApiBuilder.build().currentUsersProfile.build().execute().id } returns userId
+                every { spotifyApiBuilder.build().currentUsersProfile.build().execute() } returns
+                        User.Builder()
+                                .setId(userId)
+                                .setDisplayName("Mock Joe")
+                                .build()
             }
 
             When("doFilter called") {

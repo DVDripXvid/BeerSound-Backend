@@ -10,8 +10,9 @@ data class BeerSoundUser(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int?,
 
+        @Column(unique = true)
         val externalId: String,
-        val displayName: String?,
+        val displayName: String,
         val pictureUri: String?,
 
         @ManyToMany(
