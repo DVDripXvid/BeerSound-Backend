@@ -35,7 +35,30 @@ class JamboreeServiceImpl @Autowired constructor(
     }
 
     override fun enterJamboree(externalUserId: String, code: String): JamboreeDto? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // FIXME
+        val user = userRepository.findByExternalId(externalUserId) ?: userRepository.save(
+                BeerSoundUser(
+                        id = null,
+                        externalId = externalUserId,
+                        displayName = externalUserId,
+                        pictureUri = null,
+                        controlledJamborees = mutableListOf(),
+                        jamborees = mutableListOf(),
+                        tracks = mutableListOf()
+                )
+        )
+
+        val jamboree = jamboreeRepository.findByCode(code)
+
+        jamboree?.let {
+            if (!jamboree.users.contains(user)) {
+                jamboree.users += user
+            }
+            jamboreeRepository.save(jamboree)
+            return jamboree.toDto()
+        }
+
+        return null
     }
 
     override fun getJamboreesByUser(externalUserId: String): List<JamboreeDto> {
