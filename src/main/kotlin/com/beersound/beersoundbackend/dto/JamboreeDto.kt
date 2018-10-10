@@ -2,13 +2,13 @@ package com.beersound.beersoundbackend.dto
 
 import com.beersound.beersoundbackend.entity.BeerSoundUser
 import com.beersound.beersoundbackend.entity.Jamboree
+import java.util.*
 
 
 data class NewJamboreeDto constructor(
-        val name: String,
-        val code: String
+        val name: String
 ) {
-    fun toEntity(hanSolo: BeerSoundUser) = Jamboree(null, name, code, hanSolo, mutableListOf(), mutableListOf(hanSolo))
+    fun toEntity(hanSolo: BeerSoundUser) = Jamboree(null, name, UUID.randomUUID().toString(), hanSolo, mutableListOf(), mutableListOf(hanSolo))
 }
 
 
