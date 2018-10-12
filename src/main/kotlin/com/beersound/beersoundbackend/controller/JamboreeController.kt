@@ -8,6 +8,7 @@ import com.beersound.beersoundbackend.security.userAttrName
 import com.beersound.beersoundbackend.service.JamboreeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import javax.persistence.EntityNotFoundException
 
 @RestController()
 @RequestMapping("api/jamborees")
@@ -27,9 +28,9 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
     }
 
     @PostMapping("/enter")
-    fun enterJamboree(@RequestParam code: String): ApiResponseDto {
-        throw NotImplementedError()
-    }
+    fun enterJamboree(@RequestAttribute(userAttrName) externalUserId: String, @RequestParam code: String): JamboreeDto =
+            jamboreeService.enterJamboree(externalUserId, code)
+                    ?: throw EntityNotFoundException("Jamboree with code = $code not found")
 
     @DeleteMapping("/{jamboreeId}/leave")
     fun leaveJamboree(jamboreeId: Int): ApiResponseDto {
