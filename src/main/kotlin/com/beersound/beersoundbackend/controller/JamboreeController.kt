@@ -22,6 +22,10 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
     fun createJamboree(@RequestAttribute(userAttrName) externalUserId: String, @RequestBody jamboree: NewJamboreeDto) =
             jamboreeService.createJamboree(externalUserId, jamboree)
 
+    @GetMapping("/{jamboreeId}")
+    fun getJamboree(jamboreeId: Int): JamboreeDto = jamboreeService.getJamboree(jamboreeId)
+                    ?: throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
+
     @DeleteMapping("/{jamboreeId}")
     fun disbandJamboree(jamboreeId: Int): ApiResponseDto {
         throw NotImplementedError()

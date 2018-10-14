@@ -11,4 +11,6 @@ interface JamboreeService {
 
     fun getJamboreesByUser(externalUserId: String): List<JamboreeDto>
 
+    fun getJamboree(id: Int): JamboreeDto?
+
 }
