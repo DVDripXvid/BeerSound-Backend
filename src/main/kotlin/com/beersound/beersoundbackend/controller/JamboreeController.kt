@@ -23,7 +23,7 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
             jamboreeService.createJamboree(externalUserId, jamboree)
 
     @GetMapping("/{jamboreeId}")
-    fun getJamboree(jamboreeId: Int): JamboreeDto = jamboreeService.getJamboree(jamboreeId)
+    fun getJamboree(@PathVariable("jamboreeId") jamboreeId: Int): JamboreeDto = jamboreeService.getJamboree(jamboreeId)
                     ?: throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
 
     @DeleteMapping("/{jamboreeId}")
