@@ -17,6 +17,13 @@ class JamboreeServiceImpl @Autowired constructor(
         val userRepository: UserRepository
 ) : JamboreeService {
 
+    override fun getJamboree(id: Int): JamboreeDto? {
+        if (jamboreeRepository.findById(id).isPresent) {
+            return jamboreeRepository.findById(id).get().toDto()
+        }
+        return null
+    }
+
     override fun createJamboree(externalUserId: String, jamboree: NewJamboreeDto): JamboreeDto {
         val user = userRepository.findByExternalId(externalUserId)
                 ?: throw EntityNotFoundException("User with external id = $externalUserId not found")
