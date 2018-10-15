@@ -17,12 +17,8 @@ class JamboreeServiceImpl @Autowired constructor(
         val userRepository: UserRepository
 ) : JamboreeService {
 
-    override fun getJamboree(id: Int): JamboreeDto? {
-        if (jamboreeRepository.findById(id).isPresent) {
-            return jamboreeRepository.findById(id).get().toDto()
-        }
-        return null
-    }
+    override fun getJamboree(id: Int): JamboreeDto? =
+            jamboreeRepository.findById(id).orElse(null)?.toDto()
 
     override fun createJamboree(externalUserId: String, jamboree: NewJamboreeDto): JamboreeDto {
         val user = userRepository.findByExternalId(externalUserId)
