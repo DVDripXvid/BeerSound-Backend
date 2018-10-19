@@ -5,7 +5,7 @@ import com.beersound.beersoundbackend.dto.NewBeerSoundTrackDto
 
 interface TrackService {
 
-    fun addTrackToJamboree(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto)
+    fun addTrackToJamboree(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto): BeerSoundTrackDto
 
     fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrackDto>
 }
