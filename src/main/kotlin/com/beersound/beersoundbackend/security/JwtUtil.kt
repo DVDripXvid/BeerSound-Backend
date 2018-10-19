@@ -12,9 +12,9 @@ import java.util.*
 
 @Component
 class JwtUtil @Autowired constructor(
-        @Value("\${auth.secret}")val secret: String,
-        @Value("\${auth.issuer}")val issuer: String,
-        @Value("\${auth.token_lifetime}")val tokenLifetime: Int) {
+        @Value("\${auth.secret}") val secret: String,
+        @Value("\${auth.issuer}") val issuer: String,
+        @Value("\${auth.token_lifetime}") val tokenLifetime: Int) {
 
     fun createTokenForUser(userId: String): String {
         val algorithm = Algorithm.HMAC256(secret)

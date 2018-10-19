@@ -2,16 +2,16 @@ package com.beersound.beersoundbackend.security
 
 import com.beersound.beersoundbackend.entity.BeerSoundUser
 import com.beersound.beersoundbackend.repository.UserRepository
+import com.wrapper.spotify.SpotifyApi
+import com.wrapper.spotify.model_objects.specification.User
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import com.wrapper.spotify.SpotifyApi
-import com.wrapper.spotify.model_objects.specification.User
-import org.springframework.beans.factory.annotation.Value
 
 
 @Component
@@ -21,7 +21,7 @@ class AuthenticationFilter @Autowired constructor(
         private val spotifyApiBuilder: SpotifyApi.Builder,
         private val userRepository: UserRepository,
         @Value("\${auth.header_name}") private val bsHeaderName: String,
-        @Value("\${auth.spotify_header_name}")private val spotifyHeaderName: String)
+        @Value("\${auth.spotify_header_name}") private val spotifyHeaderName: String)
     : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -60,7 +60,7 @@ class AuthenticationFilter @Autowired constructor(
         response.sendError(401, reason)
     }
 
-    private fun saveUserDetails(spotifyUser: User){
+    private fun saveUserDetails(spotifyUser: User) {
         val foundUser = userRepository.findByExternalId(spotifyUser.id)
         val bsUser = BeerSoundUser(
                 id = foundUser?.id,

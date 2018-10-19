@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import javax.persistence.EntityNotFoundException
 
-@RestController()
+@RestController
 @RequestMapping("api/jamborees")
 class JamboreeController @Autowired constructor(private val jamboreeService: JamboreeService) {
 
@@ -24,7 +24,7 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
 
     @GetMapping("/{jamboreeId}")
     fun getJamboree(@PathVariable("jamboreeId") jamboreeId: Int): JamboreeDto = jamboreeService.getJamboree(jamboreeId)
-                    ?: throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
+            ?: throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
 
     @DeleteMapping("/{jamboreeId}")
     fun disbandJamboree(jamboreeId: Int): ApiResponseDto {

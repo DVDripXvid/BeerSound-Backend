@@ -1,5 +1,9 @@
 package com.beersound.beersoundbackend.dto
 
+import com.beersound.beersoundbackend.entity.BeerSoundTrack
+import com.beersound.beersoundbackend.entity.BeerSoundUser
+import com.beersound.beersoundbackend.entity.Jamboree
+
 data class NewBeerSoundTrackDto(
         val externalId: String,
         val title: String,
@@ -7,7 +11,9 @@ data class NewBeerSoundTrackDto(
         val album: String,
         val durationInMs: Int,
         val albumImageUrl: String?
-)
+) {
+    fun toEntity(sequenceNumber: Int, jamboree: Jamboree, user: BeerSoundUser) = BeerSoundTrack(null, sequenceNumber, externalId, title, artist, album, durationInMs, albumImageUrl, jamboree, user)
+}
 
 data class BeerSoundTrackDto(
         val id: Int,

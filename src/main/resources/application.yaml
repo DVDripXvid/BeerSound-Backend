@@ -24,3 +24,13 @@ auth:
   token_lifetime: 43200
   header_name: BS-Token
   spotify_header_name: Spotify-Token
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE

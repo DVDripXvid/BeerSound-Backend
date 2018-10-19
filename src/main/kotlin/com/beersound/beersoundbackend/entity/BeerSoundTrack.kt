@@ -1,5 +1,6 @@
 package com.beersound.beersoundbackend.entity
 
+import com.beersound.beersoundbackend.dto.BeerSoundTrackDto
 import javax.persistence.*
 
 @Entity
@@ -26,4 +27,6 @@ data class BeerSoundTrack(
                 fetch = FetchType.LAZY,
                 cascade = [CascadeType.PERSIST, CascadeType.MERGE])
         val user: BeerSoundUser
-)
+) {
+    fun toDto() = BeerSoundTrackDto(id!!, sequenceNumber, externalId, title, artist, album, durationInMs, albumImageUrl)
+}
