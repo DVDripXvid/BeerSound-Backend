@@ -20,10 +20,11 @@ class TrackServiceImpl @Autowired constructor(
 ) : TrackService {
 
     override fun addTrackToJamboree(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto) {
-        val jamboree : Jamboree = jamboreeRepository.findById(jamboreeId).orElseThrow {
-            throw EntityNotFoundException("Jamboree with id = $jamboreeId not found") }
+        val jamboree: Jamboree = jamboreeRepository.findById(jamboreeId).orElseThrow {
+            throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
+        }
 
-        val user : BeerSoundUser = userRepository.findByExternalId(externalUserId)
+        val user: BeerSoundUser = userRepository.findByExternalId(externalUserId)
                 ?: throw EntityNotFoundException("User with external id = $externalUserId not found")
 
         // TODO: better way of calculating sequence number?
@@ -32,8 +33,9 @@ class TrackServiceImpl @Autowired constructor(
     }
 
     override fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrackDto> {
-        val jamboree : Jamboree = jamboreeRepository.findById(jamboreeId).orElseThrow {
-            throw EntityNotFoundException("Jamboree with id = $jamboreeId not found") }
+        val jamboree: Jamboree = jamboreeRepository.findById(jamboreeId).orElseThrow {
+            throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
+        }
 
         return jamboree.tracks.map { it.toDto() }
     }
