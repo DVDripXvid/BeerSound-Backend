@@ -8,7 +8,16 @@ import java.util.*
 data class NewJamboreeDto constructor(
         val name: String
 ) {
-    fun toEntity(hanSolo: BeerSoundUser) = Jamboree(null, name, UUID.randomUUID().toString(), hanSolo, mutableListOf(), mutableListOf(hanSolo))
+    fun toEntity(hanSolo: BeerSoundUser) = Jamboree(
+            null,
+            name,
+            false,
+            UUID.randomUUID().toString(),
+            hanSolo,
+            null,
+            mutableListOf(),
+            mutableListOf(hanSolo)
+    )
 }
 
 
@@ -16,5 +25,7 @@ data class JamboreeDto(
         val id: Int,
         val name: String,
         val code: String,
+        val isPartyTime: Boolean,
+        val currentTrack: BeerSoundTrackDto?,
         val hanSolo: BeerSoundUserDto
 )
