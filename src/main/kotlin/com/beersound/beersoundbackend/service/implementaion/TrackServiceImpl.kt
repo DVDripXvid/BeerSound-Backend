@@ -4,6 +4,8 @@ import com.beersound.beersoundbackend.dto.BeerSoundTrackDto
 import com.beersound.beersoundbackend.dto.NewBeerSoundTrackDto
 import com.beersound.beersoundbackend.entity.BeerSoundUser
 import com.beersound.beersoundbackend.entity.Jamboree
+import com.beersound.beersoundbackend.messaging.HanSoloNotifier
+import com.beersound.beersoundbackend.messaging.event.TrackAddedEvent
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.repository.TrackRepository
 import com.beersound.beersoundbackend.repository.UserRepository
@@ -18,7 +20,8 @@ import javax.persistence.EntityNotFoundException
 class TrackServiceImpl @Autowired constructor(
         val jamboreeRepository: JamboreeRepository,
         val userRepository: UserRepository,
-        val trackRepository: TrackRepository
+        val trackRepository: TrackRepository,
+        val hanSoloNotifier: HanSoloNotifier
 ) : TrackService {
 
     override fun addTrackToJamboree(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto): BeerSoundTrackDto {
@@ -31,7 +34,10 @@ class TrackServiceImpl @Autowired constructor(
 
         val seqNumber = (trackRepository.getMaxSequenceNumberByJamboree(jamboreeId) ?: 0) + 1
         val trackEntity = track.toEntity(seqNumber, jamboree, user)
-        return trackRepository.save(trackEntity).toDto()
+        val dto = trackRepository.save(trackEntity).toDto()
+        val event = TrackAddedEvent(dto, jamboree.code)
+        hanSoloNotifier.sendEvent(event)
+        return dto
     }
 
     override fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrackDto> {
