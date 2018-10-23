@@ -1,10 +1,10 @@
 package com.beersound.beersoundbackend.messaging.event
 
-interface HanSoloEvent{
+interface HanSoloEvent {
     val jamboreeCode: String
     val type: EventType
 }
 
-enum class EventType{
+enum class EventType {
     TRACK_ADDED
 }
