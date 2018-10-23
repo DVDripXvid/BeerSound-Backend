@@ -11,9 +11,7 @@ import org.springframework.context.annotation.Configuration
 class AmqpConfig {
 
     @Bean
-    fun getHanSoloNotifierExchange(): TopicExchange {
-        return TopicExchange(notifierExchangeName)
-    }
+    fun getHanSoloNotifierExchange() = TopicExchange(notifierExchangeName)
 
     @Bean
     fun jsonMessageConverter(): MessageConverter {
@@ -21,7 +19,7 @@ class AmqpConfig {
     }
 
     companion object {
-        const val notifierExchangeName = "HAN_SOLO_NOTIFICATIONS"
+        const val notifierExchangeName = "amqp.beersound.notifications"
     }
 
 }
