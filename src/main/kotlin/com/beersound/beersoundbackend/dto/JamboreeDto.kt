@@ -15,6 +15,7 @@ data class NewJamboreeDto constructor(
             UUID.randomUUID().toString(),
             hanSolo,
             null,
+            null,
             mutableListOf(),
             mutableListOf(hanSolo)
     )
@@ -27,5 +28,6 @@ data class JamboreeDto(
         val code: String,
         val isPartyTime: Boolean,
         val currentTrack: BeerSoundTrackDto?,
+        val overrideCurrentTrack: BeerSoundTrackDto?,
         val hanSolo: BeerSoundUserDto
 )

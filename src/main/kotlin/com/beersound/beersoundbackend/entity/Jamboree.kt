@@ -11,21 +11,26 @@ data class Jamboree(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int?,
 
-        val name: String,
-        val isPartyTime: Boolean,
+        var name: String,
+        var isPartyTime: Boolean,
 
         @Column(unique = true)
-        val code: String,
+        var code: String,
 
         @ManyToOne(
                 fetch = FetchType.EAGER,
                 cascade = [CascadeType.MERGE, CascadeType.PERSIST])
-        val hanSolo: BeerSoundUser,
+        var hanSolo: BeerSoundUser,
 
         @OneToOne(
                 fetch = FetchType.EAGER,
                 cascade = [CascadeType.MERGE, CascadeType.PERSIST])
-        val currentTrack: BeerSoundTrack?,
+        var currentTrack: BeerSoundTrack?,
+
+        @OneToOne(
+                fetch = FetchType.EAGER,
+                cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+        var overrideCurrentTrack: BeerSoundTrack?,
 
         @OneToMany(
                 mappedBy = "jamboree",
@@ -48,5 +53,6 @@ data class Jamboree(
             code,
             isPartyTime,
             currentTrack?.toDto(),
+            overrideCurrentTrack?.toDto(),
             hanSolo.toDto())
 }

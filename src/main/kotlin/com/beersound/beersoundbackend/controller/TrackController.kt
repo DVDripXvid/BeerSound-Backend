@@ -27,4 +27,11 @@ class TrackController @Autowired constructor(private val trackService: TrackServ
         throw NotImplementedError()
     }
 
+    @PostMapping("/start")
+    fun trackStarted(
+            @RequestAttribute(userAttrName) externalUserId: String,
+            @PathVariable jamboreeId: Int,
+            @RequestBody track: NewBeerSoundTrackDto
+    ) = trackService.onTrackStarted(externalUserId, jamboreeId, track)
+
 }

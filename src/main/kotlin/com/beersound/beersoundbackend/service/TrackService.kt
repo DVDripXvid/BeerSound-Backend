@@ -8,4 +8,6 @@ interface TrackService {
     fun addTrackToJamboree(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto): BeerSoundTrackDto
 
     fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrackDto>
+
+    fun onTrackStarted(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto)
 }
