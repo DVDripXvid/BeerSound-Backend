@@ -15,6 +15,10 @@ class TrackController @Autowired constructor(private val trackService: TrackServ
     fun getTracksByJamboree(@PathVariable jamboreeId: Int): List<BeerSoundTrackDto> =
             trackService.getTracksByJamboree(jamboreeId)
 
+    @GetMapping("/queue")
+    fun getNotPlayedTracksByJamboree(@PathVariable jamboreeId: Int): List<BeerSoundTrackDto> =
+            trackService.getNotPlayedTracks(jamboreeId)
+
     @PostMapping
     fun addTrackToJamboree(
             @RequestAttribute(userAttrName) externalUserId: String,

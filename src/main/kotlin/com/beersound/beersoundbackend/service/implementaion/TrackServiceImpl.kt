@@ -55,7 +55,7 @@ class TrackServiceImpl @Autowired constructor(
             throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
         }
 
-        val foundTracks = trackRepository.findNotPlayedByExternalId(jamboreeId, track.externalId)
+        val foundTracks = trackRepository.findNotPlayedByJamboreeAndExternalId(jamboreeId, track.externalId)
 
         if (foundTracks.isEmpty()) {
             val user = userRepository.findByExternalId(externalUserId)
@@ -75,6 +75,11 @@ class TrackServiceImpl @Autowired constructor(
             }
         }
         jamboreeRepository.save(jamboree)
+    }
+
+    override fun getNotPlayedTracks(jamboreeId: Int): List<BeerSoundTrackDto> {
+        val notPlayedTracks = trackRepository.findNotPlayedByJamboree(jamboreeId)
+        return notPlayedTracks.map { it.toDto() }
     }
 
 }

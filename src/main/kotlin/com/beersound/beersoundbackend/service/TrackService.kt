@@ -10,4 +10,6 @@ interface TrackService {
     fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrackDto>
 
     fun onTrackStarted(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto)
+
+    fun getNotPlayedTracks(jamboreeId: Int): List<BeerSoundTrackDto>
 }
