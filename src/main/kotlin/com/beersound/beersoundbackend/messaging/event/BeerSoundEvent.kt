@@ -1,6 +1,6 @@
 package com.beersound.beersoundbackend.messaging.event
 
-interface HanSoloEvent {
+interface BeerSoundEvent {
     val jamboreeCode: String
     val type: EventType
 }

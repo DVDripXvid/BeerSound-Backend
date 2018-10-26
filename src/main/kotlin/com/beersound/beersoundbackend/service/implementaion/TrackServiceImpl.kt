@@ -4,7 +4,7 @@ import com.beersound.beersoundbackend.dto.BeerSoundTrackDto
 import com.beersound.beersoundbackend.dto.NewBeerSoundTrackDto
 import com.beersound.beersoundbackend.entity.BeerSoundUser
 import com.beersound.beersoundbackend.entity.Jamboree
-import com.beersound.beersoundbackend.messaging.HanSoloNotifier
+import com.beersound.beersoundbackend.messaging.ClientNotifier
 import com.beersound.beersoundbackend.messaging.event.TrackAddedEvent
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.repository.TrackRepository
@@ -21,7 +21,7 @@ class TrackServiceImpl @Autowired constructor(
         val jamboreeRepository: JamboreeRepository,
         val userRepository: UserRepository,
         val trackRepository: TrackRepository,
-        val hanSoloNotifier: HanSoloNotifier
+        val clientNotifier: ClientNotifier
 ) : TrackService {
 
     override fun addTrackToJamboree(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto): BeerSoundTrackDto {
@@ -36,7 +36,7 @@ class TrackServiceImpl @Autowired constructor(
         val trackEntity = track.toEntity(seqNumber, jamboree, user)
         val dto = trackRepository.save(trackEntity).toDto()
         val event = TrackAddedEvent(dto, jamboree.code)
-        hanSoloNotifier.sendEvent(event)
+        clientNotifier.sendEvent(event)
         return dto
     }
 
