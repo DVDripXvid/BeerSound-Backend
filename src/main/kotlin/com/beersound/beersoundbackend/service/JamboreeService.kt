@@ -13,4 +13,6 @@ interface JamboreeService {
 
     fun getJamboree(id: Int): JamboreeDto?
 
+    fun onPlaybackStopped(id: Int): JamboreeDto
+
 }

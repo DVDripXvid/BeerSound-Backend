@@ -49,4 +49,13 @@ class JamboreeServiceImpl @Autowired constructor(
         return jamborees.map { it.toDto() }
     }
 
+    override fun onPlaybackStopped(id: Int): JamboreeDto {
+        val jamboree = jamboreeRepository.findById(id).orElseThrow{
+            throw EntityNotFoundException("Jamboree with id = $id not found")
+        }
+
+        jamboree.isPartyTime = false
+        return jamboreeRepository.save(jamboree).toDto()
+    }
+
 }

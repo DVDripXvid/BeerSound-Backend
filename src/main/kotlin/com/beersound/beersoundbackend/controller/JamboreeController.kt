@@ -41,6 +41,9 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
         throw NotImplementedError()
     }
 
+    @GetMapping("/{jamboreeId}/stop")
+    fun playbackStopped(jamboreeId: Int) = jamboreeService.onPlaybackStopped(jamboreeId)
+
     @GetMapping("/{jamboreeId}/users")
     fun getJamboreeMembers(jamboreeId: Int): List<BeerSoundUserDto> {
         throw NotImplementedError()
