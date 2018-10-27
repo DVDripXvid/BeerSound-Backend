@@ -23,8 +23,10 @@ constructor(val userRepository: UserRepository, val eventSubscriber: EventSubscr
             return user.toDto()
         }
         val jamborees = user.jamborees
-        jamborees.forEach {
-            eventSubscriber.unsubscribeUserFromJamboreeEvents(user.toDto(), it.code)
+        if (!user.messagingId.isNullOrBlank()) {
+            jamborees.forEach {
+                eventSubscriber.unsubscribeUserFromJamboreeEvents(user.toDto(), it.code)
+            }
         }
         user.messagingId = messagingId
         val updatedUser = userRepository.save(user)

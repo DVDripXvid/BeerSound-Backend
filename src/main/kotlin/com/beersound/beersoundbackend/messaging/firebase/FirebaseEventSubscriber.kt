@@ -16,7 +16,7 @@ constructor(val firebaseMessaging: FirebaseMessaging)
     private val logger = LoggerFactory.getLogger(FirebaseEventSubscriber::class.java)!!
 
     override fun subscribeUserToJamboreeEvents(user: BeerSoundUserDto, jamboreeCode: String) {
-        if (user.messagingId == null) {
+        if (user.messagingId.isNullOrBlank()) {
             logger.error("user with id = ${user.id} has no messaging id")
         }
         val response = firebaseMessaging.subscribeToTopic(mutableListOf(user.messagingId), jamboreeCode)
@@ -29,7 +29,7 @@ constructor(val firebaseMessaging: FirebaseMessaging)
     }
 
     override fun unsubscribeUserFromJamboreeEvents(user: BeerSoundUserDto, jamboreeCode: String) {
-        if (user.messagingId == null) {
+        if (user.messagingId.isNullOrBlank()) {
             logger.error("user with id = ${user.id} has no messaging id")
         }
         val response = firebaseMessaging.unsubscribeFromTopic(mutableListOf(user.messagingId), jamboreeCode)
