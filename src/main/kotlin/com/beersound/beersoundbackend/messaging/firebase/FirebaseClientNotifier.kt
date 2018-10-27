@@ -21,7 +21,7 @@ constructor(val objectMapper: ObjectMapper, val firebaseMessaging: FirebaseMessa
                 .putData(EVENT_NAME, json)
                 .setTopic(event.jamboreeCode)
                 .build()
-        firebaseMessaging.send(message, true)
+        firebaseMessaging.send(message)
     }
 
     companion object {

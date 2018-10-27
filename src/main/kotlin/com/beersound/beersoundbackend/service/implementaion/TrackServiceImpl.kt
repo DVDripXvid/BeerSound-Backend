@@ -6,14 +6,12 @@ import com.beersound.beersoundbackend.messaging.ClientNotifier
 import com.beersound.beersoundbackend.messaging.event.TrackAddedEvent
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.repository.TrackRepository
-import com.beersound.beersoundbackend.repository.UserRepository
 import com.beersound.beersoundbackend.service.JamboreeService
 import com.beersound.beersoundbackend.service.TrackService
 import com.beersound.beersoundbackend.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import javax.persistence.EntityNotFoundException
 
 @Service
 @Transactional
@@ -32,7 +30,7 @@ class TrackServiceImpl @Autowired constructor(
         val seqNumber = (trackRepository.getMaxSequenceNumberByJamboree(jamboreeId) ?: 0) + 1
         val trackEntity = track.toEntity(seqNumber, jamboree, user)
         val createdTrack = trackRepository.save(trackEntity)
-        if(jamboree.currentTrack == null){
+        if (jamboree.currentTrack == null) {
             jamboree.currentTrack = createdTrack
         }
         val trackDto = createdTrack.toDto()
@@ -61,7 +59,7 @@ class TrackServiceImpl @Autowired constructor(
             }
         } else {
             trackRepository.deleteByJamboreeAndSequenceNumber(jamboreeId, -1)
-            jamboree.apply{
+            jamboree.apply {
                 currentTrack = foundTracks[0]
                 overrideCurrentTrack = null
                 isPartyTime = true

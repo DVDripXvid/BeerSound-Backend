@@ -17,7 +17,7 @@ class FirebaseConfig {
 
     @Bean
     fun initializeMessaging(): FirebaseMessaging {
-                val options = FirebaseOptions.builder()
+        val options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccountResource.inputStream))
                 .build()
 

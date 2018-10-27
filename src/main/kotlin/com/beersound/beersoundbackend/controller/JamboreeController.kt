@@ -8,7 +8,6 @@ import com.beersound.beersoundbackend.security.userAttrName
 import com.beersound.beersoundbackend.service.JamboreeService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import javax.persistence.EntityNotFoundException
 
 @RestController
 @RequestMapping("api/jamborees")

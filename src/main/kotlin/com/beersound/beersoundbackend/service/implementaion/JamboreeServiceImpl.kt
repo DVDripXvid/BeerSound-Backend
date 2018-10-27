@@ -3,6 +3,7 @@ package com.beersound.beersoundbackend.service.implementaion
 import com.beersound.beersoundbackend.dto.JamboreeDto
 import com.beersound.beersoundbackend.dto.NewJamboreeDto
 import com.beersound.beersoundbackend.entity.Jamboree
+import com.beersound.beersoundbackend.messaging.EventSubscriber
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.service.JamboreeService
 import com.beersound.beersoundbackend.service.UserService
@@ -15,7 +16,8 @@ import javax.persistence.EntityNotFoundException
 @Transactional
 class JamboreeServiceImpl @Autowired constructor(
         val jamboreeRepository: JamboreeRepository,
-        val userService: UserService
+        val userService: UserService,
+        val eventSubscriber: EventSubscriber
 ) : JamboreeService {
 
     override fun getJamboree(id: Int): JamboreeDto =
@@ -29,6 +31,7 @@ class JamboreeServiceImpl @Autowired constructor(
     override fun createJamboree(externalUserId: String, jamboree: NewJamboreeDto): JamboreeDto {
         val user = userService.findEntityByExternalId(externalUserId)
         val createdJamboree = jamboreeRepository.save(jamboree.toEntity(user))
+        eventSubscriber.subscribeUserToJamboreeEvents(user.toDto(), createdJamboree.code)
         return createdJamboree.toDto()
     }
 
@@ -40,6 +43,7 @@ class JamboreeServiceImpl @Autowired constructor(
 
         if (!jamboree.users.contains(user)) {
             jamboree.users += user
+            eventSubscriber.subscribeUserToJamboreeEvents(user.toDto(), jamboree.code)
         }
         jamboreeRepository.save(jamboree)
         return jamboree.toDto()
