@@ -1,7 +1,6 @@
 package com.beersound.beersoundbackend.service.implementaion
 
 import com.beersound.beersoundbackend.dto.BeerSoundTrackDto
-import com.beersound.beersoundbackend.dto.JamboreeDto
 import com.beersound.beersoundbackend.dto.NewBeerSoundTrackDto
 import com.beersound.beersoundbackend.messaging.ClientNotifier
 import com.beersound.beersoundbackend.messaging.event.TrackAddedEvent
@@ -47,12 +46,12 @@ class TrackServiceImpl @Autowired constructor(
         return jamboree.tracks.map { it.toDto() }
     }
 
-    override fun onTrackStarted(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto): JamboreeDto {
+    override fun onTrackStarted(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto): List<BeerSoundTrackDto> {
         val jamboree = jamboreeService.getJamboreeEntity(jamboreeId)
 
         val foundTracks = trackRepository.findNotPlayedByJamboreeAndExternalId(jamboreeId, track.externalId)
 
-        return if (foundTracks.isEmpty()) {
+        if (foundTracks.isEmpty()) {
             val user = userService.findEntityByExternalId(externalUserId)
 
             val createdTrack = trackRepository.save(track.toEntity(-1, jamboree, user))
@@ -67,12 +66,12 @@ class TrackServiceImpl @Autowired constructor(
                 overrideCurrentTrack = null
                 isPartyTime = true
             }
-            val updatedJamboree = jamboreeRepository.save(jamboree)
+            jamboreeRepository.save(jamboree)
             // we need a commit here cause the @Modifying query wants to run in a separate transaction
             entityManager.flush()
             trackRepository.deleteByJamboreeAndSequenceNumber(jamboreeId, -1)
-            updatedJamboree.toDto()
         }
+        return getNotPlayedTracks(jamboreeId)
     }
 
     override fun getNotPlayedTracks(jamboreeId: Int): List<BeerSoundTrackDto> {
