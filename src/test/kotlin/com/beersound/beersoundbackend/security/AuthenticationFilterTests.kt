@@ -23,7 +23,7 @@ object AuthenticationFilterTests : Spek({
     val headerName = "test-bs-header"
     val spotifyHeaderName = "test-spotify-header"
     val userId = "test-user"
-    val mockUser = BeerSoundUser(1, userId, "Mock Joe", null, emptyList(), mutableListOf(), mutableListOf())
+    val mockUser = BeerSoundUser(1, userId, "Mock Joe", null, null, emptyList(), mutableListOf(), mutableListOf())
     val userRepository = mockk<UserRepository>()
     every { userRepository.findByExternalId(any()) } returns mockUser
     every { userRepository.save<BeerSoundUser>(any()) } returns mockUser
