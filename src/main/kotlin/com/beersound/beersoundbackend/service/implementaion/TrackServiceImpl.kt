@@ -32,6 +32,9 @@ class TrackServiceImpl @Autowired constructor(
         val seqNumber = (trackRepository.getMaxSequenceNumberByJamboree(jamboreeId) ?: 0) + 1
         val trackEntity = track.toEntity(seqNumber, jamboree, user)
         val createdTrack = trackRepository.save(trackEntity)
+        if (jamboree.currentTrack == null) {
+            jamboree.currentTrack = createdTrack
+        }
         val trackDto = createdTrack.toDto()
         val event = TrackAddedEvent(trackDto, jamboree.code)
         clientNotifier.sendEvent(event)
