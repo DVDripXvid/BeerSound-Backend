@@ -39,7 +39,7 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
     }
 
     @GetMapping("/{jamboreeId}/stop")
-    fun playbackStopped(jamboreeId: Int) = jamboreeService.onPlaybackStopped(jamboreeId)
+    fun playbackStopped(@PathVariable("jamboreeId") jamboreeId: Int) = jamboreeService.onPlaybackStopped(jamboreeId)
 
     @GetMapping("/{jamboreeId}/users")
     fun getJamboreeMembers(jamboreeId: Int): List<BeerSoundUserDto> {
