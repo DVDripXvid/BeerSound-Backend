@@ -18,6 +18,7 @@ constructor(val firebaseMessaging: FirebaseMessaging)
     override fun subscribeUserToJamboreeEvents(user: BeerSoundUserDto, jamboreeCode: String) {
         if (user.messagingId.isNullOrBlank()) {
             logger.error("user with id = ${user.id} has no messaging id")
+            return
         }
         val response = firebaseMessaging.subscribeToTopic(mutableListOf(user.messagingId), jamboreeCode)
         if (response.failureCount > 0) {
@@ -31,6 +32,7 @@ constructor(val firebaseMessaging: FirebaseMessaging)
     override fun unsubscribeUserFromJamboreeEvents(user: BeerSoundUserDto, jamboreeCode: String) {
         if (user.messagingId.isNullOrBlank()) {
             logger.error("user with id = ${user.id} has no messaging id")
+            return
         }
         val response = firebaseMessaging.unsubscribeFromTopic(mutableListOf(user.messagingId), jamboreeCode)
         if (response.failureCount > 0) {
