@@ -24,7 +24,6 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
 
     @GetMapping("/{jamboreeId}")
     fun getJamboree(@PathVariable("jamboreeId") jamboreeId: Int): JamboreeDto = jamboreeService.getJamboree(jamboreeId)
-            ?: throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
 
     @DeleteMapping("/{jamboreeId}")
     fun disbandJamboree(jamboreeId: Int): ApiResponseDto {
@@ -34,7 +33,6 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
     @PostMapping("/enter")
     fun enterJamboree(@RequestAttribute(userAttrName) externalUserId: String, @RequestParam code: String): JamboreeDto =
             jamboreeService.enterJamboree(externalUserId, code)
-                    ?: throw EntityNotFoundException("Jamboree with code = $code not found")
 
     @DeleteMapping("/{jamboreeId}/leave")
     fun leaveJamboree(jamboreeId: Int): ApiResponseDto {

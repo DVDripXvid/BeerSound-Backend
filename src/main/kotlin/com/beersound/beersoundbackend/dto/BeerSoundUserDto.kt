@@ -4,4 +4,5 @@ data class BeerSoundUserDto(
         val id: Int,
         val externalId: String,
         val displayName: String,
-        val pictureUri: String?)
+        val pictureUri: String?,
+        val messagingId: String?)

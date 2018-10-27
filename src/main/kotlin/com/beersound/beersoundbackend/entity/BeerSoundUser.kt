@@ -15,6 +15,8 @@ data class BeerSoundUser(
         val displayName: String,
         val pictureUri: String?,
 
+        var messagingId: String?,
+
         @ManyToMany(
                 mappedBy = "users",
                 fetch = FetchType.LAZY)
@@ -33,5 +35,5 @@ data class BeerSoundUser(
         )
         val tracks: MutableList<BeerSoundTrack>
 ) {
-    fun toDto() = BeerSoundUserDto(id!!, externalId, displayName, pictureUri)
+    fun toDto() = BeerSoundUserDto(id!!, externalId, displayName, pictureUri, messagingId)
 }

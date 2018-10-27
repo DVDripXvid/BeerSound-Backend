@@ -7,7 +7,9 @@ import com.beersound.beersoundbackend.messaging.event.TrackAddedEvent
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.repository.TrackRepository
 import com.beersound.beersoundbackend.repository.UserRepository
+import com.beersound.beersoundbackend.service.JamboreeService
 import com.beersound.beersoundbackend.service.TrackService
+import com.beersound.beersoundbackend.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,18 +19,15 @@ import javax.persistence.EntityNotFoundException
 @Transactional
 class TrackServiceImpl @Autowired constructor(
         val jamboreeRepository: JamboreeRepository,
-        val userRepository: UserRepository,
+        val jamboreeService: JamboreeService,
+        val userService: UserService,
         val trackRepository: TrackRepository,
         val clientNotifier: ClientNotifier
 ) : TrackService {
 
     override fun addTrackToJamboree(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto): BeerSoundTrackDto {
-        val jamboree = jamboreeRepository.findById(jamboreeId).orElseThrow {
-            throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
-        }
-
-        val user = userRepository.findByExternalId(externalUserId)
-                ?: throw EntityNotFoundException("User with external id = $externalUserId not found")
+        val jamboree = jamboreeService.getJamboreeEntity(jamboreeId)
+        val user = userService.findEntityByExternalId(externalUserId)
 
         val seqNumber = (trackRepository.getMaxSequenceNumberByJamboree(jamboreeId) ?: 0) + 1
         val trackEntity = track.toEntity(seqNumber, jamboree, user)
@@ -43,23 +42,17 @@ class TrackServiceImpl @Autowired constructor(
     }
 
     override fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrackDto> {
-        val jamboree = jamboreeRepository.findById(jamboreeId).orElseThrow {
-            throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
-        }
-
+        val jamboree = jamboreeService.getJamboreeEntity(jamboreeId)
         return jamboree.tracks.map { it.toDto() }
     }
 
     override fun onTrackStarted(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto) {
-        val jamboree = jamboreeRepository.findById(jamboreeId).orElseThrow {
-            throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
-        }
+        val jamboree = jamboreeService.getJamboreeEntity(jamboreeId)
 
         val foundTracks = trackRepository.findNotPlayedByJamboreeAndExternalId(jamboreeId, track.externalId)
 
         if (foundTracks.isEmpty()) {
-            val user = userRepository.findByExternalId(externalUserId)
-                    ?: throw EntityNotFoundException("User with external id = $externalUserId not found")
+            val user = userService.findEntityByExternalId(externalUserId)
 
             val createdTrack = trackRepository.save(track.toEntity(-1, jamboree, user))
             jamboree.apply {
