@@ -22,10 +22,10 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
             jamboreeService.createJamboree(externalUserId, jamboree)
 
     @GetMapping("/{jamboreeId}")
-    fun getJamboree(@PathVariable("jamboreeId") jamboreeId: Int): JamboreeDto = jamboreeService.getJamboree(jamboreeId)
+    fun getJamboree(@PathVariable jamboreeId: Int): JamboreeDto = jamboreeService.getJamboree(jamboreeId)
 
     @DeleteMapping("/{jamboreeId}")
-    fun disbandJamboree(jamboreeId: Int): ApiResponseDto {
+    fun disbandJamboree(@PathVariable jamboreeId: Int): ApiResponseDto {
         throw NotImplementedError()
     }
 
@@ -34,25 +34,25 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
             jamboreeService.enterJamboree(externalUserId, code)
 
     @DeleteMapping("/{jamboreeId}/leave")
-    fun leaveJamboree(jamboreeId: Int): ApiResponseDto {
+    fun leaveJamboree(@PathVariable jamboreeId: Int): ApiResponseDto {
         throw NotImplementedError()
     }
 
     @GetMapping("/{jamboreeId}/stop")
-    fun playbackStopped(@PathVariable("jamboreeId") jamboreeId: Int) = jamboreeService.onPlaybackStopped(jamboreeId)
+    fun playbackStopped(@PathVariable jamboreeId: Int) = jamboreeService.onPlaybackStopped(jamboreeId)
 
     @GetMapping("/{jamboreeId}/users")
-    fun getJamboreeMembers(jamboreeId: Int): List<BeerSoundUserDto> {
+    fun getJamboreeMembers(@PathVariable jamboreeId: Int): List<BeerSoundUserDto> {
         throw NotImplementedError()
     }
 
     @PutMapping("/{jamboreeId}/resign")
-    fun resignHanSolo(jamboreeId: Int): ApiResponseDto {
+    fun resignHanSolo(@PathVariable jamboreeId: Int): ApiResponseDto {
         throw NotImplementedError()
     }
 
     @PutMapping("/{jamboreeId}/apply")
-    fun applyHanSolo(jamboreeId: Int): ApiResponseDto {
+    fun applyHanSolo(@PathVariable jamboreeId: Int): ApiResponseDto {
         throw NotImplementedError()
     }
 
