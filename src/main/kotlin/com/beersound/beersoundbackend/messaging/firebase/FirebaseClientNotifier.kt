@@ -5,6 +5,7 @@ import com.beersound.beersoundbackend.messaging.event.BeerSoundEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -14,6 +15,8 @@ class FirebaseClientNotifier
 constructor(val objectMapper: ObjectMapper, val firebaseMessaging: FirebaseMessaging)
     : ClientNotifier {
 
+    private val logger = LoggerFactory.getLogger(FirebaseClientNotifier::class.java)!!
+
     override fun sendEvent(event: BeerSoundEvent) {
         val json = objectMapper.writeValueAsString(event)
         val message = Message.builder()
@@ -21,7 +24,8 @@ constructor(val objectMapper: ObjectMapper, val firebaseMessaging: FirebaseMessa
                 .putData(EVENT_NAME, json)
                 .setTopic(event.jamboreeCode)
                 .build()
-        firebaseMessaging.send(message)
+        val response = firebaseMessaging.send(message)
+        logger.debug("Firebase message sent: $response")
     }
 
     companion object {
