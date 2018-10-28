@@ -31,7 +31,7 @@ constructor(val userRepository: UserRepository, val eventSubscriber: EventSubscr
         user.messagingId = messagingId
         val updatedUser = userRepository.save(user)
         jamborees.forEach {
-            eventSubscriber.unsubscribeUserFromJamboreeEvents(updatedUser.toDto(), it.code)
+            eventSubscriber.subscribeUserToJamboreeEvents(updatedUser.toDto(), it.code)
         }
         return updatedUser.toDto()
     }

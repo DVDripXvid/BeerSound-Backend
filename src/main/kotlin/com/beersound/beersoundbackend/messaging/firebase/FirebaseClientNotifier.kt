@@ -24,8 +24,8 @@ constructor(val objectMapper: ObjectMapper, val firebaseMessaging: FirebaseMessa
                 .putData(EVENT_NAME, json)
                 .setTopic(event.jamboreeCode)
                 .build()
-        val response = firebaseMessaging.send(message)
-        logger.debug("Firebase message sent: $response")
+        val messageId = firebaseMessaging.send(message)
+        logger.debug("Firebase message sent. id = $messageId")
     }
 
     companion object {
