@@ -6,5 +6,6 @@ interface BeerSoundEvent {
 }
 
 enum class EventType {
-    TRACK_ADDED
+    TRACK_ADDED,
+    PLAYBACK_STARTED
 }

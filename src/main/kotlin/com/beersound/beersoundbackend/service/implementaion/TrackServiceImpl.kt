@@ -3,6 +3,7 @@ package com.beersound.beersoundbackend.service.implementaion
 import com.beersound.beersoundbackend.dto.BeerSoundTrackDto
 import com.beersound.beersoundbackend.dto.NewBeerSoundTrackDto
 import com.beersound.beersoundbackend.messaging.ClientNotifier
+import com.beersound.beersoundbackend.messaging.event.PlaybackStartedEvent
 import com.beersound.beersoundbackend.messaging.event.TrackAddedEvent
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.repository.TrackRepository
@@ -71,6 +72,10 @@ class TrackServiceImpl @Autowired constructor(
             entityManager.flush()
             trackRepository.deleteByJamboreeAndSequenceNumber(jamboreeId, -1)
         }
+
+        val event = PlaybackStartedEvent(jamboree.toDto(), jamboree.code)
+        clientNotifier.sendEvent(event)
+
         return getNotPlayedTracks(jamboreeId)
     }
 

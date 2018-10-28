@@ -3,6 +3,7 @@ package com.beersound.beersoundbackend.service.implementaion
 import com.beersound.beersoundbackend.dto.JamboreeDto
 import com.beersound.beersoundbackend.dto.NewJamboreeDto
 import com.beersound.beersoundbackend.entity.Jamboree
+import com.beersound.beersoundbackend.messaging.ClientNotifier
 import com.beersound.beersoundbackend.messaging.EventSubscriber
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.service.JamboreeService
@@ -17,8 +18,9 @@ import javax.persistence.EntityNotFoundException
 class JamboreeServiceImpl @Autowired constructor(
         val jamboreeRepository: JamboreeRepository,
         val userService: UserService,
-        val eventSubscriber: EventSubscriber
-) : JamboreeService {
+        val eventSubscriber: EventSubscriber,
+        val clientNotifier: ClientNotifier
+        ) : JamboreeService {
 
     override fun getJamboree(id: Int): JamboreeDto =
             getJamboreeEntity(id).toDto()
