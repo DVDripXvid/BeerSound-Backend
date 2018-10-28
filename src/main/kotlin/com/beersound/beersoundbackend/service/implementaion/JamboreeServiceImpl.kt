@@ -5,6 +5,7 @@ import com.beersound.beersoundbackend.dto.NewJamboreeDto
 import com.beersound.beersoundbackend.entity.Jamboree
 import com.beersound.beersoundbackend.messaging.ClientNotifier
 import com.beersound.beersoundbackend.messaging.EventSubscriber
+import com.beersound.beersoundbackend.messaging.event.PlaybackStoppedEvent
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.service.JamboreeService
 import com.beersound.beersoundbackend.service.UserService
@@ -59,6 +60,10 @@ class JamboreeServiceImpl @Autowired constructor(
     override fun onPlaybackStopped(id: Int): JamboreeDto {
         val jamboree = getJamboreeEntity(id)
         jamboree.isPartyTime = false
+
+        val event = PlaybackStoppedEvent(jamboree.toDto(), jamboree.code)
+        clientNotifier.sendEvent(event)
+
         return jamboreeRepository.save(jamboree).toDto()
     }
 
