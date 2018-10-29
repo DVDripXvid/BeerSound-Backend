@@ -42,9 +42,8 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
     fun playbackStopped(@PathVariable jamboreeId: Int) = jamboreeService.onPlaybackStopped(jamboreeId)
 
     @GetMapping("/{jamboreeId}/users")
-    fun getJamboreeMembers(@PathVariable jamboreeId: Int): List<BeerSoundUserDto> {
-        throw NotImplementedError()
-    }
+    fun getJamboreeMembers(@PathVariable jamboreeId: Int): List<BeerSoundUserDto> =
+            jamboreeService.getUsersByJamboree(jamboreeId)
 
     @PutMapping("/{jamboreeId}/resign")
     fun resignHanSolo(@PathVariable jamboreeId: Int): ApiResponseDto {

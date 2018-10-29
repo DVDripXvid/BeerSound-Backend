@@ -1,5 +1,6 @@
 package com.beersound.beersoundbackend.service
 
+import com.beersound.beersoundbackend.dto.BeerSoundUserDto
 import com.beersound.beersoundbackend.dto.JamboreeDto
 import com.beersound.beersoundbackend.dto.NewJamboreeDto
 import com.beersound.beersoundbackend.entity.Jamboree
@@ -18,4 +19,5 @@ interface JamboreeService {
 
     fun onPlaybackStopped(id: Int): JamboreeDto
 
+    fun getUsersByJamboree(id: Int): List<BeerSoundUserDto>
 }

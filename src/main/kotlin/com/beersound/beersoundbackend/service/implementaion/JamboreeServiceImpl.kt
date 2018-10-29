@@ -1,5 +1,6 @@
 package com.beersound.beersoundbackend.service.implementaion
 
+import com.beersound.beersoundbackend.dto.BeerSoundUserDto
 import com.beersound.beersoundbackend.dto.JamboreeDto
 import com.beersound.beersoundbackend.dto.NewJamboreeDto
 import com.beersound.beersoundbackend.entity.Jamboree
@@ -67,4 +68,8 @@ class JamboreeServiceImpl @Autowired constructor(
         return jamboreeRepository.save(jamboree).toDto()
     }
 
+    override fun getUsersByJamboree(id: Int): List<BeerSoundUserDto> {
+        val jamboree = getJamboreeEntity(id)
+        return jamboree.users.map { it.toDto() }
+    }
 }
