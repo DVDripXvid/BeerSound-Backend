@@ -25,6 +25,10 @@ auth:
   header_name: BS-Token
   spotify_header_name: Spotify-Token
 
+rating:
+  min: -2
+  max: 2
+
 logging:
   level:
     org:

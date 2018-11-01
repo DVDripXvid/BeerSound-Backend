@@ -12,7 +12,7 @@ data class NewBeerSoundTrackDto(
         val durationInMs: Int,
         val albumImageUrl: String?
 ) {
-    fun toEntity(sequenceNumber: Int, jamboree: Jamboree, user: BeerSoundUser) = BeerSoundTrack(null, sequenceNumber, externalId, title, artist, album, durationInMs, albumImageUrl, jamboree, user)
+    fun toEntity(sequenceNumber: Int, jamboree: Jamboree, user: BeerSoundUser) = BeerSoundTrack(null, sequenceNumber, externalId, title, artist, album, durationInMs, albumImageUrl, jamboree, user, mutableListOf())
 }
 
 data class BeerSoundTrackDto(
