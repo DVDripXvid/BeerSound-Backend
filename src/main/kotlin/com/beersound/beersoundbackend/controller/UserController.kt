@@ -1,22 +1,21 @@
 package com.beersound.beersoundbackend.controller
 
 import com.beersound.beersoundbackend.dto.BeerSoundUserDto
-import com.beersound.beersoundbackend.repository.UserRepository
 import com.beersound.beersoundbackend.security.userAttrName
+import com.beersound.beersoundbackend.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import javax.persistence.EntityNotFoundException
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("api/users")
-class UserController @Autowired constructor(val userRepository: UserRepository) {
+class UserController @Autowired constructor(val userService: UserService) {
 
     @GetMapping("/me")
     fun getCurrentUser(@RequestAttribute(userAttrName) externalUserId: String): BeerSoundUserDto =
-            userRepository.findByExternalId(externalUserId)?.toDto()
-                    ?: throw EntityNotFoundException("User with external id = $externalUserId not found")
+            userService.findByExternalId(externalUserId)
+
+    @PutMapping("/me/messagingId")
+    fun setRegistrationToken(@RequestAttribute(userAttrName) externalUserId: String, @RequestParam("messagingId") messagingId: String): BeerSoundUserDto =
+            userService.updateMessagingId(externalUserId, messagingId)
 
 }

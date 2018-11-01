@@ -2,44 +2,86 @@ package com.beersound.beersoundbackend.service.implementaion
 
 import com.beersound.beersoundbackend.dto.BeerSoundTrackDto
 import com.beersound.beersoundbackend.dto.NewBeerSoundTrackDto
-import com.beersound.beersoundbackend.entity.BeerSoundUser
-import com.beersound.beersoundbackend.entity.Jamboree
+import com.beersound.beersoundbackend.messaging.ClientNotifier
+import com.beersound.beersoundbackend.messaging.event.PlaybackStartedEvent
+import com.beersound.beersoundbackend.messaging.event.TrackAddedEvent
 import com.beersound.beersoundbackend.repository.JamboreeRepository
 import com.beersound.beersoundbackend.repository.TrackRepository
-import com.beersound.beersoundbackend.repository.UserRepository
+import com.beersound.beersoundbackend.service.JamboreeService
 import com.beersound.beersoundbackend.service.TrackService
+import com.beersound.beersoundbackend.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import javax.persistence.EntityNotFoundException
+import javax.persistence.EntityManager
 
 @Service
 @Transactional
 class TrackServiceImpl @Autowired constructor(
         val jamboreeRepository: JamboreeRepository,
-        val userRepository: UserRepository,
-        val trackRepository: TrackRepository
+        val jamboreeService: JamboreeService,
+        val userService: UserService,
+        val trackRepository: TrackRepository,
+        val clientNotifier: ClientNotifier,
+        val entityManager: EntityManager
 ) : TrackService {
 
     override fun addTrackToJamboree(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto): BeerSoundTrackDto {
-        val jamboree: Jamboree = jamboreeRepository.findById(jamboreeId).orElseThrow {
-            throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
-        }
-
-        val user: BeerSoundUser = userRepository.findByExternalId(externalUserId)
-                ?: throw EntityNotFoundException("User with external id = $externalUserId not found")
+        val jamboree = jamboreeService.getJamboreeEntity(jamboreeId)
+        val user = userService.findEntityByExternalId(externalUserId)
 
         val seqNumber = (trackRepository.getMaxSequenceNumberByJamboree(jamboreeId) ?: 0) + 1
         val trackEntity = track.toEntity(seqNumber, jamboree, user)
-        return trackRepository.save(trackEntity).toDto()
+        val createdTrack = trackRepository.save(trackEntity)
+        if (jamboree.currentTrack == null) {
+            jamboree.currentTrack = createdTrack
+        }
+        val trackDto = createdTrack.toDto()
+        val event = TrackAddedEvent(trackDto, jamboree.code)
+        clientNotifier.sendEvent(event)
+        return trackDto
     }
 
     override fun getTracksByJamboree(jamboreeId: Int): List<BeerSoundTrackDto> {
-        val jamboree: Jamboree = jamboreeRepository.findById(jamboreeId).orElseThrow {
-            throw EntityNotFoundException("Jamboree with id = $jamboreeId not found")
+        val jamboree = jamboreeService.getJamboreeEntity(jamboreeId)
+        return jamboree.tracks.map { it.toDto() }
+    }
+
+    override fun onTrackStarted(externalUserId: String, jamboreeId: Int, track: NewBeerSoundTrackDto): List<BeerSoundTrackDto> {
+        val jamboree = jamboreeService.getJamboreeEntity(jamboreeId)
+
+        val foundTracks = trackRepository.findNotPlayedByJamboreeAndExternalId(jamboreeId, track.externalId)
+
+        if (foundTracks.isEmpty()) {
+            val user = userService.findEntityByExternalId(externalUserId)
+
+            val createdTrack = trackRepository.save(track.toEntity(-1, jamboree, user))
+            jamboree.apply {
+                overrideCurrentTrack = createdTrack
+                isPartyTime = true
+            }
+            jamboreeRepository.save(jamboree).toDto()
+        } else {
+            jamboree.apply {
+                currentTrack = foundTracks[0]
+                overrideCurrentTrack = null
+                isPartyTime = true
+            }
+            jamboreeRepository.save(jamboree)
+            // we need a commit here cause the @Modifying query wants to run in a separate transaction
+            entityManager.flush()
+            trackRepository.deleteByJamboreeAndSequenceNumber(jamboreeId, -1)
         }
 
-        return jamboree.tracks.map { it.toDto() }
+        val event = PlaybackStartedEvent(jamboree.toDto(), jamboree.code)
+        clientNotifier.sendEvent(event)
+
+        return getNotPlayedTracks(jamboreeId)
+    }
+
+    override fun getNotPlayedTracks(jamboreeId: Int): List<BeerSoundTrackDto> {
+        val notPlayedTracks = trackRepository.findNotPlayedByJamboree(jamboreeId)
+        return notPlayedTracks.map { it.toDto() }
     }
 
 }

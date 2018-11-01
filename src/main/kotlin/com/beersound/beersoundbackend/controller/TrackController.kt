@@ -15,6 +15,10 @@ class TrackController @Autowired constructor(private val trackService: TrackServ
     fun getTracksByJamboree(@PathVariable jamboreeId: Int): List<BeerSoundTrackDto> =
             trackService.getTracksByJamboree(jamboreeId)
 
+    @GetMapping("/queue")
+    fun getNotPlayedTracksByJamboree(@PathVariable jamboreeId: Int): List<BeerSoundTrackDto> =
+            trackService.getNotPlayedTracks(jamboreeId)
+
     @PostMapping
     fun addTrackToJamboree(
             @RequestAttribute(userAttrName) externalUserId: String,
@@ -26,5 +30,12 @@ class TrackController @Autowired constructor(private val trackService: TrackServ
     fun removeTrackFromJamboree(jamboreeId: Int, trackId: Int) {
         throw NotImplementedError()
     }
+
+    @PostMapping("/start")
+    fun trackStarted(
+            @RequestAttribute(userAttrName) externalUserId: String,
+            @PathVariable jamboreeId: Int,
+            @RequestBody track: NewBeerSoundTrackDto
+    ) = trackService.onTrackStarted(externalUserId, jamboreeId, track)
 
 }

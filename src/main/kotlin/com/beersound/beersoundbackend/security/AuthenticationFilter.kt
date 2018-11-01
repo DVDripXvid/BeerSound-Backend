@@ -69,7 +69,8 @@ class AuthenticationFilter @Autowired constructor(
                 pictureUri = spotifyUser.images?.firstOrNull()?.url,
                 controlledJamborees = mutableListOf(),
                 jamborees = emptyList(),
-                tracks = mutableListOf()
+                tracks = mutableListOf(),
+                messagingId = null
         )
         userRepository.save(bsUser)
     }
