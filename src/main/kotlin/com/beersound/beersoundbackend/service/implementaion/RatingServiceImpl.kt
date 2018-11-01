@@ -3,6 +3,8 @@ package com.beersound.beersoundbackend.service.implementaion
 import com.beersound.beersoundbackend.dto.BeerSoundTrackDto
 import com.beersound.beersoundbackend.entity.Rating
 import com.beersound.beersoundbackend.helpers.TrackRatingComparator
+import com.beersound.beersoundbackend.messaging.ClientNotifier
+import com.beersound.beersoundbackend.messaging.event.QueueReorderedEvent
 import com.beersound.beersoundbackend.repository.TrackRepository
 import com.beersound.beersoundbackend.service.JamboreeService
 import com.beersound.beersoundbackend.service.RatingService
@@ -24,6 +26,7 @@ constructor(
         val jamboreeService: JamboreeService,
         val userService: UserService,
         val entityManager: EntityManager,
+        val clientNotifier: ClientNotifier,
         @Value("\${rating.min}") val rateMin: Int,
         @Value("\${rating.max}") val rateMax: Int
 ) : RatingService {
@@ -50,6 +53,9 @@ constructor(
         }
         trackRepository.saveAll(tracksSorted)
         entityManager.flush()
+        val queue = trackService.getNotPlayedTracks(jamboreeId)
+        val event = QueueReorderedEvent(queue, jamboree.code)
+        clientNotifier.sendEvent(event)
         return trackService.getNotPlayedTracks(jamboreeId)
     }
 
