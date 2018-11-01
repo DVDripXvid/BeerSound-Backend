@@ -23,4 +23,7 @@ data class BeerSoundTrackDto(
         val artist: String,
         val album: String,
         val durationInMs: Int,
-        val albumImageUrl: String?)
+        val albumImageUrl: String?,
+        val numberOfVotes: Int,
+        val averageRating: Double
+)

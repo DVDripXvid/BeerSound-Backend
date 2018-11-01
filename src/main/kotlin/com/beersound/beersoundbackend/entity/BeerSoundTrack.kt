@@ -34,5 +34,19 @@ data class BeerSoundTrack(
                 cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE])
         val ratings: MutableList<Rating>
 ) {
-    fun toDto() = BeerSoundTrackDto(id!!, sequenceNumber, externalId, title, artist, album, durationInMs, albumImageUrl)
+    fun toDto() = BeerSoundTrackDto(
+            id!!,
+            sequenceNumber,
+            externalId,
+            title,
+            artist,
+            album,
+            durationInMs,
+            albumImageUrl,
+            ratings.size,
+            when (ratings.isEmpty()) {
+                true -> 0.0
+                else -> ratings.asSequence().map { it.value }.average()
+            }
+    )
 }
