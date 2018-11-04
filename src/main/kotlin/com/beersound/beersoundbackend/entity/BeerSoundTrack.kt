@@ -10,7 +10,7 @@ data class BeerSoundTrack(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int?,
 
-        val sequenceNumber: Int,
+        var sequenceNumber: Int,
         val externalId: String,
         val title: String,
         val artist: String,
@@ -26,7 +26,27 @@ data class BeerSoundTrack(
         @ManyToOne(
                 fetch = FetchType.LAZY,
                 cascade = [CascadeType.PERSIST, CascadeType.MERGE])
-        val user: BeerSoundUser
+        val user: BeerSoundUser,
+
+        @OneToMany(
+                mappedBy = "track",
+                fetch = FetchType.EAGER,
+                cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE])
+        val ratings: MutableList<Rating>
 ) {
-    fun toDto() = BeerSoundTrackDto(id!!, sequenceNumber, externalId, title, artist, album, durationInMs, albumImageUrl)
+    fun toDto() = BeerSoundTrackDto(
+            id!!,
+            sequenceNumber,
+            externalId,
+            title,
+            artist,
+            album,
+            durationInMs,
+            albumImageUrl,
+            ratings.size,
+            when (ratings.isEmpty()) {
+                true -> 0.0
+                else -> ratings.asSequence().map { it.value }.average()
+            }
+    )
 }

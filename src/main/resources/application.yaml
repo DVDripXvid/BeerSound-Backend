@@ -18,18 +18,16 @@ spring:
           lob:
             non_contextual_creation: true
 
-  #rabbitmq:
-  #  host: 192.168.99.100
-  #  port: 5672
-  #  username: guest
-  #  password: guest
-
 auth:
   secret: beersound-secret
   issuer: beersound-backend
   token_lifetime: 43200
   header_name: BS-Token
   spotify_header_name: Spotify-Token
+
+rating:
+  min: -2
+  max: 2
 
 logging:
   level:

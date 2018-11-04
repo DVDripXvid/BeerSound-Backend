@@ -22,7 +22,7 @@ class JamboreeServiceImpl @Autowired constructor(
         val userService: UserService,
         val eventSubscriber: EventSubscriber,
         val clientNotifier: ClientNotifier
-        ) : JamboreeService {
+) : JamboreeService {
 
     override fun getJamboree(id: Int): JamboreeDto =
             getJamboreeEntity(id).toDto()
