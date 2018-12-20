@@ -9,7 +9,11 @@ interface JamboreeService {
 
     fun createJamboree(externalUserId: String, jamboree: NewJamboreeDto): JamboreeDto
 
+    fun disbandJamboree(externalUserId: String, jamboreeId: Int)
+
     fun enterJamboree(externalUserId: String, code: String): JamboreeDto
+
+    fun leaveJamboree(externalUserId: String, jamboreeId: Int)
 
     fun getJamboreesByUser(externalUserId: String): List<JamboreeDto>
 

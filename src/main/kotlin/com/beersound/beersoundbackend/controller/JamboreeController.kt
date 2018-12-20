@@ -25,18 +25,16 @@ class JamboreeController @Autowired constructor(private val jamboreeService: Jam
     fun getJamboree(@PathVariable jamboreeId: Int): JamboreeDto = jamboreeService.getJamboree(jamboreeId)
 
     @DeleteMapping("/{jamboreeId}")
-    fun disbandJamboree(@PathVariable jamboreeId: Int): ApiResponseDto {
-        throw NotImplementedError()
-    }
+    fun disbandJamboree(@RequestAttribute(userAttrName) externalUserId: String, @PathVariable jamboreeId: Int) =
+            jamboreeService.disbandJamboree(externalUserId, jamboreeId)
 
     @PostMapping("/enter")
     fun enterJamboree(@RequestAttribute(userAttrName) externalUserId: String, @RequestParam code: String): JamboreeDto =
             jamboreeService.enterJamboree(externalUserId, code)
 
     @DeleteMapping("/{jamboreeId}/leave")
-    fun leaveJamboree(@PathVariable jamboreeId: Int): ApiResponseDto {
-        throw NotImplementedError()
-    }
+    fun leaveJamboree(@RequestAttribute(userAttrName) externalUserId: String, @PathVariable jamboreeId: Int) =
+            jamboreeService.leaveJamboree(externalUserId, jamboreeId)
 
     @GetMapping("/{jamboreeId}/stop")
     fun playbackStopped(@PathVariable jamboreeId: Int) = jamboreeService.onPlaybackStopped(jamboreeId)

@@ -6,10 +6,13 @@ import com.beersound.beersoundbackend.dto.NewJamboreeDto
 import com.beersound.beersoundbackend.entity.Jamboree
 import com.beersound.beersoundbackend.messaging.ClientNotifier
 import com.beersound.beersoundbackend.messaging.EventSubscriber
+import com.beersound.beersoundbackend.messaging.event.JamboreeDisbandedEvent
 import com.beersound.beersoundbackend.messaging.event.PlaybackStoppedEvent
 import com.beersound.beersoundbackend.repository.JamboreeRepository
+import com.beersound.beersoundbackend.repository.UserRepository
 import com.beersound.beersoundbackend.service.JamboreeService
 import com.beersound.beersoundbackend.service.UserService
+import com.wrapper.spotify.exceptions.detailed.UnauthorizedException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,6 +23,7 @@ import javax.persistence.EntityNotFoundException
 class JamboreeServiceImpl @Autowired constructor(
         val jamboreeRepository: JamboreeRepository,
         val userService: UserService,
+        val userRepository: UserRepository,
         val eventSubscriber: EventSubscriber,
         val clientNotifier: ClientNotifier
 ) : JamboreeService {
@@ -39,6 +43,21 @@ class JamboreeServiceImpl @Autowired constructor(
         return createdJamboree.toDto()
     }
 
+    override fun disbandJamboree(externalUserId: String, jamboreeId: Int) {
+        val user = userService.findEntityByExternalId(externalUserId)
+        val jamboree = getJamboreeEntity(jamboreeId)
+
+        if(user.controlledJamborees.removeIf{ j -> j.id == jamboreeId }){
+            userRepository.save(user)
+            //TODO: unsubscribe
+            jamboreeRepository.deleteById(jamboreeId)
+            val event = JamboreeDisbandedEvent(jamboreeId, jamboree.code)
+            clientNotifier.sendEvent(event)
+        } else {
+            throw UnauthorizedException("You are not the Han Solo")
+        }
+    }
+
     override fun enterJamboree(externalUserId: String, code: String): JamboreeDto {
         val user = userService.findEntityByExternalId(externalUserId)
 
@@ -51,6 +70,16 @@ class JamboreeServiceImpl @Autowired constructor(
         }
         jamboreeRepository.save(jamboree)
         return jamboree.toDto()
+    }
+
+    override fun leaveJamboree(externalUserId: String, jamboreeId: Int) {
+        val user = userService.findEntityByExternalId(externalUserId)
+        val jamboree = getJamboreeEntity(jamboreeId)
+
+        jamboree.users.removeIf { u -> u.externalId == externalUserId }
+        eventSubscriber.unsubscribeUserFromJamboreeEvents(user.toDto(), jamboree.code)
+
+        jamboreeRepository.save(jamboree)
     }
 
     override fun getJamboreesByUser(externalUserId: String): List<JamboreeDto> {

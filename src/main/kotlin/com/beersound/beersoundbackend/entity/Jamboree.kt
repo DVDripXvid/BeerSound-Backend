@@ -24,18 +24,18 @@ data class Jamboree(
 
         @OneToOne(
                 fetch = FetchType.EAGER,
-                cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+                cascade = [CascadeType.ALL])
         var currentTrack: BeerSoundTrack?,
 
         @OneToOne(
                 fetch = FetchType.EAGER,
-                cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+                cascade = [CascadeType.ALL])
         var overrideCurrentTrack: BeerSoundTrack?,
 
         @OneToMany(
                 mappedBy = "jamboree",
                 fetch = FetchType.LAZY,
-                cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+                cascade = [CascadeType.ALL])
         val tracks: MutableList<BeerSoundTrack>,
 
         @ManyToMany(
